@@ -1,0 +1,37 @@
+# Hinton Library CI: build, test and package on every push and pull request.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out latest code
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # 2. Set up the environment (same Java version every run)
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # 3-4. Compile, run unit tests, package the .jar
+      #      (a failing test fails the build)
+      - name: Build, test and package
+        run: mvn -B verify
+
+      # 5. Keep the .jar as a downloadable build artifact
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: library-jar
+          path: target/*.jar
