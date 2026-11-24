@@ -38,6 +38,6 @@ public class Loan {
             return 0;
         }
         long fee = days * DAILY_FEE_CENTS;
-        return (int) Math.max(fee, MAX_FEE_CENTS);
+        return (int) Math.min(fee, MAX_FEE_CENTS);
     }
 }
